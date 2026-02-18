@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Prediction Page</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/prediction.css') }}">
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar">
+    <div class="logo">Diabetic Retinopathy Classification</div>
+    <ul class="nav-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/logout" class="logout-btn">Logout</a></li>
+    </ul>
+</nav>
+
+<h1 class="user">Wellcome {{name}}</h1>
+
+<!-- Main Container -->
+<div class="prediction-container">
+
+    <h1 class="main-heading">
+    Check Your Diabetic Retina Level
+    </h1>
+
+    <!-- Upload Form -->
+    <form action="/prediction" method="POST" enctype="multipart/form-data" class="upload-form">
+
+        <div class="upload-area" id="upload-area">
+            <input type="file" name="file" id="fileInput" hidden required>
+
+            <div class="upload-content">
+                <p>Drag & Drop Retina Image Here</p>
+                <span>or</span>
+                <button type="button" class="browse-btn" onclick="document.getElementById('fileInput').click();">
+                    Browse File
+                </button>
+            </div>
+
+            <img id="preview" class="preview-image" style="display:none;" />
+        </div>
+
+        <div class="button-group">
+            <button type="submit" class="analyze-btn">Analyze</button>
+            <button type="reset" class="reupload-btn">Re-upload</button>
+        </div>
+
+    </form>
+    
+    {% if prediction %}
+<div class="result-container">
+
+    <div class="result-card">
+
+        <div class="result-image">
+            <img src="{{ uploaded_image }}">
+        </div>
+
+        <div class="result-info">
+            <h2>Prediction Result</h2>
+
+            <div class="result-badge {{ prediction }}">
+                {{ prediction }}
+            </div>
+
+            {% if confidence %}
+            <div class="confidence-box">
+                Confidence: {{ confidence }}%
+                <div class="confidence-bar">
+                    <div class="confidence-fill"
+                        data-confidence="{{ confidence if confidence else 0 }}">
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</div>
+{% endif %}
+    
+    <!-- All Class Info Section -->
+    <div class="class-info">
+
+        <div class="class-card green">
+            <img src="{{ url_for('static', filename='images/0.png') }}">
+            <h3>No DR</h3>
+        </div>
+
+        <div class="class-card yellow">
+            <img src="{{ url_for('static', filename='images/1.png') }}">
+            <h3>Mild DR</h3>
+        </div>
+
+        <div class="class-card orange">
+            <img src="{{ url_for('static', filename='images/2.png') }}">
+            <h3>Moderate DR</h3>
+        </div>
+
+        <div class="class-card dark-orange">
+            <img src="{{ url_for('static', filename='images/3.png') }}">
+            <h3>Severe DR</h3>
+        </div>
+
+        <div class="class-card red">
+            <img src="{{ url_for('static', filename='images/4.png') }}">
+            <h3>Proliferative DR</h3>
+        </div>
+
+    </div>
+
+</div>
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+
+const uploadArea = document.getElementById("upload-area");
+const fileInput = document.getElementById("fileInput");
+const preview = document.getElementById("preview");
+const reuploadBtn = document.querySelector(".reupload-btn");
+
+uploadArea.addEventListener("dragover", (e) => {
+    e.preventDefault();
+    uploadArea.style.background = "#d6eaf8";
+});
+
+uploadArea.addEventListener("dragleave", () => {
+    uploadArea.style.background = "#ecf0f1";
+});
+
+uploadArea.addEventListener("drop", (e) => {
+    e.preventDefault();
+    fileInput.files = e.dataTransfer.files;
+    displayPreview(e.dataTransfer.files[0]);
+});
+
+fileInput.addEventListener("change", () => {
+    displayPreview(fileInput.files[0]);
+});
+
+function displayPreview(file) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        preview.src = e.target.result;
+        preview.style.display = "block";
+        uploadArea.classList.add("has-image");
+    }
+    reader.readAsDataURL(file);
+}
+
+/* FIX RE-UPLOAD BUTTON */
+reuploadBtn.addEventListener("click", function(){
+    fileInput.value = "";
+    preview.style.display = "none";
+    preview.src = "";
+    uploadArea.classList.remove("has-image");
+    uploadArea.style.background = "#ecf0f1";
+});
+
+});
+
+document.addEventListener("DOMContentLoaded", function(){
+    const fill = document.querySelector(".confidence-fill");
+    if(fill){
+        let value = fill.getAttribute("data-confidence");
+        fill.style.width = value + "%";
+    }
+});
+</script>
+</body>
+</html>

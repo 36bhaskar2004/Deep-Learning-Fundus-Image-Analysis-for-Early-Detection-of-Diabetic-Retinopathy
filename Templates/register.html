@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Registration</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/register.css') }}">
+</head>
+<script>
+function togglePassword() {
+    const passwordField = document.getElementById("password");
+    const eye = document.querySelector(".toggle-eye");
+
+    if (passwordField.type === "password") {
+        passwordField.type = "text";
+        eye.textContent = "🙈";
+    } else {
+        passwordField.type = "password";
+        eye.textContent = "👁️";
+    }
+}
+</script>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="logo">Diabetic Retinopathy Classification</div>
+        <ul class="nav-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="/login">Login</a></li>
+        </ul>
+    </nav>
+
+    <div class="heading">
+        <h1>User Registration</h1>
+    </div>
+    <!-- Registration Card -->
+    <div class="register-container">
+        <div class="register-box">
+            
+            <!-- Avatar -->
+            <div class="avatar">
+                <img src="{{ url_for('static', filename='images/Screenshot 2026-02-16 162416.png') }}" alt="User Icon">
+            </div>
+
+            <!-- Form -->
+            <form action="/register" method="POST">
+                <input type="text" name="name" placeholder="Enter Name" required>
+                <input type="email" name="email" placeholder="Enter Email ID" required>
+                <div class="password-container">
+                    <input 
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Enter Password"
+                        pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$"
+                        title="Password must be at least 8 characters long and include uppercase, lowercase and number" 
+                        minlength="8" 
+                        required>
+                        <span class="toggle-eye" onclick="togglePassword()">👁️</span>
+                </div>
+                <button type="submit">Register</button>
+            </form>
+
+            <p class="login-text">
+                Already have an account?
+                <a href="/login">Login</a>
+            </p>
+
+        </div>
+    </div>
+
+</body>
+</html>

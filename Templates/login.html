@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+</head>
+<script>
+function togglePassword() {
+    const passwordField = document.getElementById("password");
+    const eye = document.querySelector(".toggle-eye");
+
+    if (passwordField.type === "password") {
+        passwordField.type = "text";
+        eye.textContent = "🙈";
+    } else {
+        passwordField.type = "password";
+        eye.textContent = "👁️";
+    }
+}
+</script>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="logo">Diabetic Retinopathy Classification</div>
+        <ul class="nav-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="/register">Register</a></li>
+        </ul>
+    </nav>
+
+    <div class="heading">
+        <h1>User Login</h1>
+    </div>
+
+    <!-- Login Section -->
+    <div class="login-container">
+        <div class="login-box">
+
+            <!-- Avatar -->
+            <div class="avatar">
+                <img src="{{ url_for('static', filename='images/Screenshot 2026-02-16 162416.png') }}" alt="User Icon">
+            </div>
+
+            <!-- Login Form -->
+            <form action="/login" method="POST">
+                <input type="email" name="email" placeholder="Enter registered email ID" required>
+                <div class="password-container">
+                    <input 
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Enter Password"
+                        pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$"
+                        title="Password must be at least 8 characters long and include uppercase, lowercase and number" 
+                        minlength="8" 
+                        required>
+                        <span class="toggle-eye" onclick="togglePassword()">👁️</span>
+                </div>
+
+                <button type="submit">Login</button>
+            </form>
+
+            <p class="register-text">
+                Don't have an account?
+                <a href="/register">Register</a>
+            </p>
+
+        </div>
+    </div>
+        {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for message in messages%}
+    <h1>
+        {{message}}
+    </h1>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+</body>
+</html>
